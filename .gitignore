@@ -1,0 +1,43 @@
+# Secrets and local config (keep the example)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Logs
+*.log
+logs/
+
+# Python
+__pycache__/
+.pytest_cache/
+.venv/
+
+# App and build output
+node_modules/
+.expo/
+app/ios/
+app/android/
+target/
+dist/
+build/
+DerivedData/
+.next/
+
+# Models and large binaries
+models/
+*.bin
+*.gguf
+*.onnx
+*.safetensors
+*.pt
+
+# Docker volumes and Postgres data
+pgdata/
+postgres-data/
+volumes/
+
+# Local state
+.seeded
+.DS_Store

@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Demos</title>
+<meta name="description" content="A voice app where you talk to everyone at once. The World answers as &quot;we&quot;, built only from what real people said.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ground: #000000;
+    --text: #F5F5F3;
+    --second: #A3A3A0;
+    --line: #2E2E2C;
+    --field: #141414;
+    --voice: "Bricolage Grotesque", system-ui, sans-serif;
+    --data: "DM Mono", ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--ground); }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--text);
+    font-family: var(--voice);
+    font-size: 18px;
+    line-height: 1.5;
+  }
+  main { max-width: 1040px; margin: 0 auto; padding: 0 16px 96px; }
+  header { padding: 32px 0 0; display: flex; align-items: center; gap: 10px; }
+  .mark { width: 30px; height: 18px; position: relative; }
+  .mark span { position: absolute; top: 0; width: 18px; height: 18px; border-radius: 50%; background: var(--text); opacity: .55; }
+  .mark span + span { left: 12px; }
+  .name { font-weight: 600; font-size: 20px; }
+  .tag { margin-left: auto; font-family: var(--data); font-size: 12px; color: var(--second); border: 1px solid var(--line); padding: 3px 8px; }
+  h1 { font-size: clamp(40px, 8vw, 76px); line-height: 1.02; font-weight: 400; letter-spacing: -0.02em; margin: 96px 0 24px; max-width: 13ch; }
+  .lede { font-size: clamp(20px, 2.6vw, 26px); line-height: 1.35; color: var(--second); max-width: 34ch; margin: 0; }
+  .lede b { color: var(--text); font-weight: 400; }
+  h2 { font-size: 15px; font-weight: 400; color: var(--second); margin: 112px 0 24px; padding-top: 20px; border-top: 1px solid var(--line); }
+  .shots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  figure { margin: 0; }
+  figure img { display: block; width: 100%; height: auto; border-radius: 22px; border: 1px solid var(--line); }
+  figcaption { margin-top: 12px; font-size: 16px; line-height: 1.35; color: var(--second); }
+  figcaption b { display: block; color: var(--text); font-weight: 400; }
+  .rules { display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px 48px; }
+  .rules p { margin: 0; color: var(--second); }
+  .rules p b { display: block; color: var(--text); font-weight: 400; font-size: 22px; line-height: 1.25; margin-bottom: 6px; }
+  .steps { counter-reset: step; display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px; max-width: 720px; }
+  .step p { margin: 0 0 10px; }
+  .step p::before { counter-increment: step; content: counter(step) "  "; font-family: var(--data); color: var(--second); font-size: 14px; }
+  pre {
+    margin: 0;
+    background: var(--field);
+    border: 1px solid var(--line);
+    padding: 14px 16px;
+    overflow-x: auto;
+    font-family: var(--data);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  code { font-family: var(--data); font-size: .85em; }
+  .note { color: var(--second); max-width: 720px; margin: 28px 0 0; }
+  a { color: var(--text); text-underline-offset: 3px; }
+  footer { margin-top: 112px; padding-top: 20px; border-top: 1px solid var(--line); color: var(--second); font-size: 15px; display: flex; flex-wrap: wrap; gap: 8px 24px; }
+  @media (max-width: 760px) {
+    h1 { margin-top: 64px; }
+    h2 { margin-top: 80px; }
+    .shots { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .rules { grid-template-columns: 1fr; gap: 24px; }
+  }
+  @media (max-width: 420px) {
+    .shots { grid-template-columns: 1fr 1fr; gap: 12px; }
+    figcaption { font-size: 14px; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="mark" aria-hidden="true"><span></span><span></span></div>
+    <div class="name">Demos</div>
+    <div class="tag">Early, sample data</div>
+  </header>
+
+  <h1>Talk to everyone at once.</h1>
+  <p class="lede">You say what's on your mind. <b>The World</b> answers as "we", built only from what real people said. It has no opinions of its own, and when it doesn't know, it says so.</p>
+
+  <h2>The app</h2>
+  <div class="shots">
+    <figure>
+      <img src="img/first-open.png" alt="A black screen with one question from the World and a mic button" width="414" height="900">
+      <figcaption><b>No forms</b>You just talk.</figcaption>
+    </figure>
+    <figure>
+      <img src="img/where-you-stand.png" alt="The World saying what share of people in Milan agree, and offering the other view" width="414" height="900" loading="lazy">
+      <figcaption><b>Where you stand</b>The World speaks as "we", with real counts, and offers the other view.</figcaption>
+    </figure>
+    <figure>
+      <img src="img/challenge.png" alt="A white screen where the World speaks as the people who disagree" width="414" height="900" loading="lazy">
+      <figcaption><b>The other side</b>The screen turns white when the World speaks as the people who disagree with you.</figcaption>
+    </figure>
+    <figure>
+      <img src="img/not-enough.png" alt="The World saying few people have talked about schools, with a data block below" width="414" height="900" loading="lazy">
+      <figcaption><b>Honest when it's thin</b>Too few people? It says so, and shows data instead.</figcaption>
+    </figure>
+    <figure>
+      <img src="img/map.png" alt="A map of topics drawn as pairs of circles" width="414" height="900" loading="lazy">
+      <figcaption><b>The Map</b>Each topic is two circles. The distance between them is the gap.</figcaption>
+    </figure>
+    <figure>
+      <img src="img/agreement.png" alt="An Agreement card with support bars for each group" width="414" height="900" loading="lazy">
+      <figcaption><b>Agreements</b>When an idea wins across groups, it becomes a live card.</figcaption>
+    </figure>
+  </div>
+  <p class="note">Real screens from the iPhone simulator. The numbers are sample data, and facts are placeholders until real sources are reviewed.</p>
+
+  <h2>How the World stays honest</h2>
+  <div class="rules">
+    <p><b>Code writes every number.</b>The model never types a figure. Every reply is checked against its evidence before it's said.</p>
+    <p><b>No voting.</b>Your position comes from how you talk, and only counts after you confirm it.</p>
+    <p><b>Every side at its strongest.</b>Arguments come from real people, never from the AI itself.</p>
+    <p><b>Black and white.</b>The World has no side, so the interface has no colour. Colour only ever measures something.</p>
+  </div>
+
+  <h2>Try it on your laptop</h2>
+  <div class="steps">
+    <div class="step">
+      <p>Get the database up. You need Docker, <a href="https://docs.astral.sh/uv/">uv</a> and Python 3.12 or 3.13.</p>
+<pre>cp .env.example .env
+docker compose up -d</pre>
+    </div>
+    <div class="step">
+      <p>Start the backend from <code>backend/</code>. The two servers each need their own terminal.</p>
+<pre>uv sync
+uv run python -m demos.seed
+uv run uvicorn demos.identity_service:app --port 8001
+uv run uvicorn demos.api:app --port 8000</pre>
+    </div>
+    <div class="step">
+      <p>Build and run the app from <code>app/</code>. You need Node 20 or newer and Xcode or Android Studio.</p>
+<pre>npm install
+npx expo run:ios</pre>
+    </div>
+    <div class="step">
+      <p>Run the tests from <code>backend/</code>.</p>
+<pre>uv run --group dev pytest</pre>
+    </div>
+  </div>
+  <p class="note">It's a native dev build, because speech recognition runs on the phone. Sign-in is a dev stub, and the World uses fixed templates unless you give it a model key. The README has the details.</p>
+
+  <footer>
+    <span>Demos, from the Greek for "the people".</span>
+    <span>License: to be decided.</span>
+  </footer>
+</main>
+</body>
+</html>
