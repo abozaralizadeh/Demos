@@ -22,7 +22,7 @@ What's still stand-in: the World uses fixed templates unless you give it a model
 You need Docker, [uv](https://docs.astral.sh/uv/) and Python 3.12 or 3.13. For the app you also need Node 20 or newer and Xcode (iPhone) or Android Studio.
 
 ```bash
-git clone <this repo> demos && cd demos
+git clone https://github.com/abozaralizadeh/Demos.git demos && cd demos
 cp .env.example .env
 docker compose up -d
 ```
