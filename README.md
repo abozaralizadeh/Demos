@@ -1,5 +1,9 @@
 # Demos
 
+<p align="center"><img src="site/img/demo.gif" width="320" alt="A walkthrough of one talk in Demos: the World asks what's on your mind, says where you stand, speaks for the other side on a white screen, shows data, offers an idea both sides might take, then the Map and an Agreement card"></p>
+
+<p align="center">Real screens from the iPhone simulator. The numbers are sample data.<br><b><a href="https://abozaralizadeh.github.io/Demos/">Project page</a></b></p>
+
 Demos is a voice app where you talk to everyone at once.
 
 You tap the mic and say what's on your mind. "The World" answers. It's an AI with no name and no opinions of its own. It speaks as "we", and it can only say what real people said or what labelled data shows. When it doesn't know, it says so.
@@ -10,7 +14,7 @@ The name is Greek for "the people".
 
 ## Status
 
-Early and not running anywhere public. The backend and the phone app work end to end on a laptop, on sample data:
+Early, and there's no hosted version to try. The backend and the phone app work end to end on a laptop, on sample data:
 
 - The talk engine, its honesty checks, the worker and the API, with tests against a real Postgres
 - An Expo app for iPhone and Android: the full talk, the Map, You, Agreement cards, settings, error screens, the safety card and local notifications
@@ -91,13 +95,12 @@ It's meant for a test box. Don't run it with real people's data until the dev si
 
 ## Contributing
 
-Issues and pull requests are welcome. A few things matter more here than usual:
-
-- The World never invents people, opinions or numbers. Code writes every number, and replies are checked before they're said. Please keep it that way.
-- The interface is black and white. Colour only ever measures something: red for divided, green for agreement, grey for mixed.
-- Political opinions are sensitive data. Logs hold IDs and timings only, never what anyone said.
-- Run the tests before you open a pull request, and add one for anything you fix.
+Issues and pull requests are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) first: the World never invents people, opinions or numbers, and contributions are only accepted under the terms there.
 
 ## License
 
-To be decided. Until a license is added, the code is shared for reading and trying out, not for reuse.
+Demos is source available, free for non-commercial use ([PolyForm Noncommercial 1.0.0](LICENSE)). You can use it, study it, change it and share it for anything that isn't commercial. The docs and images are under [CC BY-NC 4.0](LICENSE-DOCS.md).
+
+Commercial use needs written permission. To ask, [open an issue](https://github.com/abozaralizadeh/Demos/issues).
+
+Third-party code and fonts keep their own licenses. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

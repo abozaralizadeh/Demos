@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Demos</title>
 <meta name="description" content="A voice app where you talk to everyone at once. The World answers as &quot;we&quot;, built only from what real people said.">
+<link rel="icon" type="image/png" href="img/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
@@ -35,6 +36,12 @@
   .mark span + span { left: 12px; }
   .name { font-weight: 600; font-size: 20px; }
   .tag { margin-left: auto; font-family: var(--data); font-size: 12px; color: var(--second); border: 1px solid var(--line); padding: 3px 8px; }
+  .repo { font-family: var(--data); font-size: 12px; text-decoration: none; border: 1px solid var(--text); padding: 3px 8px; }
+  .repo:hover { background: var(--text); color: var(--ground); }
+  .demo { display: grid; grid-template-columns: minmax(0, 360px) minmax(0, 1fr); gap: 48px; align-items: end; }
+  .demo img { display: block; width: 100%; height: auto; }
+  .demo p { margin: 0 0 16px; color: var(--second); max-width: 34ch; }
+  .demo p b { color: var(--text); font-weight: 400; }
   h1 { font-size: clamp(40px, 8vw, 76px); line-height: 1.02; font-weight: 400; letter-spacing: -0.02em; margin: 96px 0 24px; max-width: 13ch; }
   .lede { font-size: clamp(20px, 2.6vw, 26px); line-height: 1.35; color: var(--second); max-width: 34ch; margin: 0; }
   .lede b { color: var(--text); font-weight: 400; }
@@ -66,6 +73,8 @@
   footer { margin-top: 112px; padding-top: 20px; border-top: 1px solid var(--line); color: var(--second); font-size: 15px; display: flex; flex-wrap: wrap; gap: 8px 24px; }
   @media (max-width: 760px) {
     h1 { margin-top: 64px; }
+    .demo { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+    .demo img { max-width: 360px; }
     h2 { margin-top: 80px; }
     .shots { grid-template-columns: repeat(2, 1fr); gap: 16px; }
     .rules { grid-template-columns: 1fr; gap: 24px; }
@@ -82,10 +91,20 @@
     <div class="mark" aria-hidden="true"><span></span><span></span></div>
     <div class="name">Demos</div>
     <div class="tag">Early, sample data</div>
+    <a class="repo" href="https://github.com/abozaralizadeh/Demos">GitHub</a>
   </header>
 
   <h1>Talk to everyone at once.</h1>
   <p class="lede">You say what's on your mind. <b>The World</b> answers as "we", built only from what real people said. It has no opinions of its own, and when it doesn't know, it says so.</p>
+
+  <h2>One talk, start to finish</h2>
+  <div class="demo">
+    <img src="img/demo.gif" alt="A walkthrough of one talk: the World asks what's on your mind, says where you stand, speaks for the other side on a white screen, shows data, offers an idea both sides might take, then the Map and an Agreement card" width="400" height="915">
+    <div>
+      <p><b>Real screens from the app,</b> running in the iPhone simulator against the real backend.</p>
+      <p>The numbers are sample data. The World uses fixed templates here instead of a language model, and facts about Milan are placeholders until real sources are checked.</p>
+    </div>
+  </div>
 
   <h2>The app</h2>
   <div class="shots">
@@ -148,11 +167,14 @@ npx expo run:ios</pre>
 <pre>uv run --group dev pytest</pre>
     </div>
   </div>
-  <p class="note">It's a native dev build, because speech recognition runs on the phone. Sign-in is a dev stub, and the World uses fixed templates unless you give it a model key. The README has the details.</p>
+  <p class="note">It's a native dev build, because speech recognition runs on the phone. Sign-in is a dev stub, and the World uses fixed templates unless you give it a model key. The <a href="https://github.com/abozaralizadeh/Demos#readme">README</a> has the details.</p>
+
+  <h2>License</h2>
+  <p class="note" style="margin-top:0">Source available, free for non-commercial use (<a href="https://github.com/abozaralizadeh/Demos/blob/main/LICENSE">PolyForm Noncommercial 1.0.0</a>). Commercial use needs written permission: <a href="https://github.com/abozaralizadeh/Demos/issues">open an issue</a> to ask.</p>
 
   <footer>
     <span>Demos, from the Greek for "the people".</span>
-    <span>License: to be decided.</span>
+    <a href="https://github.com/abozaralizadeh/Demos">github.com/abozaralizadeh/Demos</a>
   </footer>
 </main>
 </body>
