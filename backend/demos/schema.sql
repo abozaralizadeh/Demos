@@ -268,3 +268,10 @@ CREATE TABLE IF NOT EXISTS reply_failure (
     reasons text[] NOT NULL,
     at timestamptz NOT NULL DEFAULT now()
 );
+
+-- One row a day: AI calls and tokens, checked against DAILY_REQUEST_CAP and DAILY_TOKEN_BUDGET.
+CREATE TABLE IF NOT EXISTS ai_usage (
+    day date PRIMARY KEY,
+    requests integer NOT NULL DEFAULT 0,
+    tokens bigint NOT NULL DEFAULT 0
+);

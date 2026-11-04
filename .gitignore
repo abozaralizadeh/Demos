@@ -41,3 +41,6 @@ volumes/
 # Local state
 .seeded
 .DS_Store
+
+# Unix socket for identity on a shared VM
+run/

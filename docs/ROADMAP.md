@@ -18,7 +18,11 @@ Everything runs on sample data for now. Facts about Milan are placeholders like 
 - [x] The "not enough of us yet" path
 - [ ] Argument merging and fair rewriting
 - [ ] The safety path, with the wording checked by experts
-- [ ] A plain web test page with voice and captions
+- [x] A plain web test page with captions (typed, no voice yet)
+- [ ] Voice on the web test page
+- [x] Azure OpenAI with a fallback deployment, and daily caps on calls and tokens
+- [x] Per-address limits with a polite answer
+- [x] Runs under a path behind an existing nginx on a shared VM
 
 ## The phone app
 

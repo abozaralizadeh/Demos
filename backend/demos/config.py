@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
 
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -30,6 +31,23 @@ class Settings(BaseSettings):
     log_backups: int = 3
     world_model: str = "claude-opus-5-5"
     extract_model: str = "claude-haiku-5-5"
+    # On a shared VM identity listens on a unix socket instead of a port.
+    identity_socket: str = ""
+
+    # Azure OpenAI wins over Claude when it's set. The fallback is tried only when the main one fails.
+    azure_endpoint: str = Field("", validation_alias="AZURE_OPENAI_ENDPOINT")
+    azure_api_key: str = Field("", validation_alias="AZURE_OPENAI_API_KEY")
+    azure_deployment: str = Field("", validation_alias="AZURE_OPENAI_DEPLOYMENT")
+    azure_fallback_endpoint: str = Field("", validation_alias="AZURE_OPENAI_FALLBACK_ENDPOINT")
+    azure_fallback_api_key: str = Field("", validation_alias="AZURE_OPENAI_FALLBACK_API_KEY")
+    azure_fallback_deployment: str = Field("", validation_alias="AZURE_OPENAI_FALLBACK_DEPLOYMENT")
+    ai_timeout: float = Field(20.0, validation_alias="AI_TIMEOUT_SECONDS")
+
+    # Hard caps. When the day's AI is spent the World keeps talking with its plain templates.
+    daily_request_cap: int = Field(3000, validation_alias="DAILY_REQUEST_CAP")
+    daily_token_budget: int = Field(300_000, validation_alias="DAILY_TOKEN_BUDGET")
+    rate_talk_per_ip_per_hour: int = Field(120, validation_alias="RATE_TALK_PER_IP_PER_HOUR")
+    rate_signin_per_ip_per_hour: int = Field(10, validation_alias="RATE_SIGNIN_PER_IP_PER_HOUR")
 
 
 @dataclass(frozen=True)

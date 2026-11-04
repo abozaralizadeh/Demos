@@ -1,12 +1,14 @@
 services:
   postgres:
     image: postgres:17-alpine
+    restart: unless-stopped
     environment:
       POSTGRES_USER: demos
-      POSTGRES_PASSWORD: demos_dev
+      # setup_service.sh makes a random one on a shared VM. The default is only for a laptop.
+      POSTGRES_PASSWORD: ${DEMOS_PG_PASSWORD:-demos_dev}
       POSTGRES_DB: demos
     ports:
-      - "127.0.0.1:5433:5432"
+      - "127.0.0.1:${DEMOS_PG_PORT:-5433}:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./backend/dev/init-databases.sql:/docker-entrypoint-initdb.d/init-databases.sql:ro

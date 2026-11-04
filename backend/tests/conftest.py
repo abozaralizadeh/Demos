@@ -8,6 +8,12 @@ os.environ["DEMOS_DEV_IDENTITY"] = "1"
 # Keep test runs out of the dev logs people copy off the VM.
 os.environ["DEMOS_LOG_DIR"] = "logs/test"
 os.environ.pop("ANTHROPIC_API_KEY", None)
+# Tests never call a real model, whatever is in .env.
+for name in ("AZURE_OPENAI_ENDPOINT", "AZURE_OPENAI_FALLBACK_ENDPOINT"):
+    os.environ[name] = ""
+os.environ["DEMOS_IDENTITY_SOCKET"] = ""
+os.environ["RATE_TALK_PER_IP_PER_HOUR"] = "100000"
+os.environ["RATE_SIGNIN_PER_IP_PER_HOUR"] = "100000"
 
 import pytest
 

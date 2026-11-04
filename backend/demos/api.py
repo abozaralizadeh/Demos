@@ -2,19 +2,21 @@
 
 import html
 import logging
+import time
 import uuid
 from dataclasses import asdict
 from datetime import date, datetime
+from pathlib import Path
 from typing import Literal
 
 import httpx
-from fastapi import Depends, FastAPI, Header, HTTPException
-from fastapi.responses import HTMLResponse
+from fastapi import Depends, FastAPI, Header, HTTPException, Request
+from fastapi.responses import FileResponse, HTMLResponse
 from psycopg.rows import dict_row
 from psycopg_pool import ConnectionPool
 from pydantic import BaseModel
 
-from . import logs, openings, tokens
+from . import ai, logs, openings, tokens
 from .config import THRESHOLDS, settings
 from .copy import say
 from .counts import agreement_card, map_data, people_total, you_data
@@ -77,6 +79,46 @@ def unlocked(person=Depends(consented)) -> dict:
     return person
 
 
+class RateLimiter:
+    """Small in-memory sliding window per client address. Fine for one process on one VM."""
+
+    def __init__(self):
+        self.hits: dict[str, list[float]] = {}
+
+    def allow(self, key: str, limit: int, window: float = 3600, now: float | None = None) -> bool:
+        now = time.monotonic() if now is None else now
+        recent = [t for t in self.hits.get(key, []) if now - t < window]
+        if len(self.hits) > 10_000:
+            # Drop addresses that went quiet, so the map can't grow forever.
+            self.hits = {k: v for k, v in self.hits.items() if v and now - v[-1] < window}
+        allowed = len(recent) < limit
+        if allowed:
+            recent.append(now)
+        self.hits[key] = recent
+        return allowed
+
+
+limiter = RateLimiter()
+
+
+def client_ip(request: Request) -> str:
+    # uvicorn swaps in the X-Forwarded-For address only for proxies listed in TRUST_PROXY.
+    return request.client.host if request.client else "unknown"
+
+
+def talk_limit(request: Request, person=Depends(consented)) -> dict:
+    if not limiter.allow("talk:" + client_ip(request), settings().rate_talk_per_ip_per_hour):
+        raise HTTPException(429, say(person["language"], "busy"))
+    return person
+
+
+def identity_client() -> httpx.Client:
+    cfg = settings()
+    if cfg.identity_socket:
+        return httpx.Client(base_url="http://identity", transport=httpx.HTTPTransport(uds=cfg.identity_socket), timeout=5)
+    return httpx.Client(base_url=cfg.identity_url, timeout=5)
+
+
 # Accounts
 
 
@@ -95,6 +137,27 @@ def create_session(body: SessionIn, conn=Depends(db)):
         (payload["person_id"], body.language),
     )
     return {"token": tokens.sign(settings().session_secret, {"person_id": payload["person_id"]}, 60 * 60 * 24 * 90)}
+
+
+class DevSignIn(BaseModel):
+    language: Literal["it", "en"] = "it"
+
+
+@app.post("/v1/dev/sign-in")
+def dev_sign_in(body: DevSignIn, request: Request, conn=Depends(db)):
+    """The test page's sign-in. A new made-up person each time, through the dev identity stub."""
+    if not settings().dev_identity:
+        raise HTTPException(404)
+    if not limiter.allow("signin:" + client_ip(request), settings().rate_signin_per_ip_per_hour):
+        raise HTTPException(429, say(body.language, "busy"))
+    try:
+        with identity_client() as client:
+            r = client.post("/verify/dev", json={"tax_code": "DEV" + uuid.uuid4().hex, "born": "1990-01-01"})
+            r.raise_for_status()
+    except httpx.HTTPError:
+        log.error("dev sign-in could not reach identity")
+        raise HTTPException(502, "Sign-in isn't working right now. Please try again.")
+    return create_session(SessionIn(assertion=r.json()["assertion"], language=body.language), conn)
 
 
 @app.post("/v1/consent")
@@ -197,11 +260,10 @@ def delete_me(person=Depends(current_person), conn=Depends(db)):
     forget_person(conn, person["id"])
     conn.commit()
     try:
-        httpx.delete(
-            f"{settings().identity_url}/internal/person/{person['id']}",
-            headers={"x-service-token": settings().service_token},
-            timeout=5,
-        ).raise_for_status()
+        with identity_client() as client:
+            client.delete(
+                f"/internal/person/{person['id']}", headers={"x-service-token": settings().service_token}
+            ).raise_for_status()
     except httpx.HTTPError:
         log.error("identity link not removed for a deleted person")
         raise HTTPException(502, "Your data is gone, but your sign-in wasn't removed. Please try again.")
@@ -244,12 +306,12 @@ class FixIn(BaseModel):
 
 
 @app.post("/v1/talk")
-def start_talk(body: StartIn, person=Depends(consented), conn=Depends(db)):
+def start_talk(body: StartIn, person=Depends(talk_limit), conn=Depends(db)):
     return asdict(Engine(conn).start(person, body.opened_by, body.topic_id))
 
 
 @app.post("/v1/talk/{conversation_id}/say")
-def say_something(conversation_id: uuid.UUID, body: SayIn, person=Depends(consented), conn=Depends(db)):
+def say_something(conversation_id: uuid.UUID, body: SayIn, person=Depends(talk_limit), conn=Depends(db)):
     text = body.text.strip()[:2000]
     if not text:
         raise HTTPException(422, "nothing said")
@@ -415,4 +477,13 @@ def public_agreement(agreement_id: int, lang: Literal["it", "en"] = "it", conn=D
 @app.get("/health")
 def health(conn=Depends(db)):
     conn.execute("SELECT 1")
-    return {"ok": True, "at": datetime.now().isoformat()}
+    return {"ok": True, "at": datetime.now().isoformat(), "ai": ai.provider(), "sample": settings().sample_data}
+
+
+TEST_PAGE = Path(__file__).with_name("web") / "index.html"
+
+
+@app.get("/", include_in_schema=False)
+def test_page():
+    """A small page to try a talk in a browser. Every URL in it is relative, so it works under a path."""
+    return FileResponse(TEST_PAGE, headers={"cache-control": "no-cache"})

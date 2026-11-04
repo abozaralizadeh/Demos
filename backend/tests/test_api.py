@@ -1,3 +1,4 @@
+import contextlib
 import uuid
 
 import pytest
@@ -109,15 +110,12 @@ def test_delete_really_deletes(client, identity):
     assert any("unique-marker-words" in t["text"] for t in export["transcripts"])
 
     pid = tokens.verify(settings().session_secret, h["Authorization"].removeprefix("Bearer "))["person_id"]
-    identity_url = settings().identity_url
-    import httpx
-
-    real = httpx.delete
-    httpx.delete = lambda url, headers, timeout: identity.delete(url.removeprefix(identity_url), headers=headers)
+    real = api.identity_client
+    api.identity_client = lambda: contextlib.nullcontext(identity)
     try:
         assert client.delete("/v1/me", headers=h).status_code == 200
     finally:
-        httpx.delete = real
+        api.identity_client = real
 
     assert client.get("/v1/open", headers=h).status_code == 401
     with connect() as conn:
@@ -208,3 +206,46 @@ def test_review_console_is_locked(client):
     assert client.get("/review").status_code == 401
     assert client.get("/review", auth=("reviewer", "wrong")).status_code == 401
     assert client.get("/review", auth=("reviewer", settings().review_token)).status_code == 200
+
+
+def test_the_test_page_and_health_work_without_an_account(client):
+    page = client.get("/")
+    assert page.status_code == 200 and "Dev sign-in" in page.text
+    # Every call in the page is relative, so it keeps working under a path like /demos/.
+    assert 'fetch("/' not in page.text and "call(\"/" not in page.text
+    health = client.get("/health").json()
+    assert health["ok"] and health["ai"] == "templates" and health["sample"]
+
+
+def test_dev_sign_in_goes_through_the_api(client, identity, monkeypatch):
+    monkeypatch.setattr(api, "identity_client", lambda: contextlib.nullcontext(identity))
+    token = client.post("/v1/dev/sign-in", json={"language": "en"}).json()["token"]
+    h = {"Authorization": f"Bearer {token}"}
+    consent(client, h)
+    talk = client.post("/v1/talk", headers=h, json={})
+    assert talk.status_code == 200 and talk.json()["lines"]
+
+
+def test_dev_sign_in_is_gone_when_dev_identity_is_off(client, monkeypatch):
+    monkeypatch.setattr(settings(), "dev_identity", False)
+    assert client.post("/v1/dev/sign-in", json={}).status_code == 404
+
+
+def test_too_many_talks_from_one_address_get_a_polite_no(client, identity, monkeypatch):
+    h, _ = sign_in(client, identity)
+    consent(client, h)
+    monkeypatch.setattr(settings(), "rate_talk_per_ip_per_hour", 2)
+    monkeypatch.setattr(api, "limiter", api.RateLimiter())
+    assert client.post("/v1/talk", headers=h, json={}).status_code == 200
+    assert client.post("/v1/talk", headers=h, json={}).status_code == 200
+    third = client.post("/v1/talk", headers=h, json={})
+    assert third.status_code == 429 and "Give us a minute" in third.json()["detail"]
+
+
+def test_sign_ins_from_one_address_are_capped(client, identity, monkeypatch):
+    monkeypatch.setattr(api, "identity_client", lambda: contextlib.nullcontext(identity))
+    monkeypatch.setattr(settings(), "rate_signin_per_ip_per_hour", 1)
+    monkeypatch.setattr(api, "limiter", api.RateLimiter())
+    assert client.post("/v1/dev/sign-in", json={"language": "it"}).status_code == 200
+    again = client.post("/v1/dev/sign-in", json={"language": "it"})
+    assert again.status_code == 429 and "Aspetta un minuto" in again.json()["detail"]

@@ -90,7 +90,7 @@ Everything here is **Proposed**.
 | Backend | Python with FastAPI | Good WebSocket support, and the clustering and language tools are in Python |
 | Database | PostgreSQL with pgvector | One database for records and embeddings. A separate vector store isn't worth it at this size |
 | Background jobs | A queue inside PostgreSQL | No extra moving part until volume asks for one |
-| AI model | Claude Opus 5.5 for what the World says. Claude Haiku 5.5 for bulk claim extraction if it passes the same tests | The World's words carry the trust, so they get the strongest model. Run the same Italian test set on one other model before committing, and keep the model behind a thin layer so it can be swapped |
+| AI model | Behind a thin layer (`backend/demos/ai.py`): Azure OpenAI with a fallback deployment, or Claude Opus 5.5 with Haiku 5.5 for extraction, or no model and the fixed templates. Every call counts against a daily request cap and token budget kept in Postgres | The World's words carry the trust, so the model only rewords templates and every reply goes through the same checks whichever model wrote it. Run the same Italian test set on any model before relying on it |
 | Speech to text | A hosted streaming service with an EU endpoint | Picked by test on real Italian voices, including Milan accents and noisy rooms |
 | Text to speech | A hosted service with an EU endpoint, one neutral voice per language | Can be muted. Captions always show |
 | Embeddings | An open multilingual model running on our VM | Opinions don't leave the VM for this step, and it runs fine on CPU at pilot size |

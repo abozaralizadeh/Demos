@@ -13,7 +13,8 @@ from .config import THRESHOLDS, settings
 from .copy import VALUE_WORDS, say
 from .counts import LIVE, is_paused, tally, topic_people
 from .moves import Move, TalkFacts, next_move
-from .writer import ClaudeReader, ClaudeWriter, Declined, TemplateWriter, has_key
+from . import ai
+from .writer import Declined, TemplateWriter
 
 log = logging.getLogger("demos.engine")
 
@@ -34,14 +35,18 @@ class Result:
     ended: bool = False
     turn_id: int | None = None
     unlocked: bool = False
+    notice: str | None = None
 
 
 class Engine:
     def __init__(self, conn, writer=None, reader=None):
         self.conn = conn
         self.cur = conn.cursor()
-        self.writer = writer or (ClaudeWriter() if has_key() else TemplateWriter())
-        self.reader = reader or (ClaudeReader() if has_key() else None)
+        self.budget = None
+        if writer is None and reader is None:
+            writer, reader, self.budget = ai.pick()
+        self.writer = writer or TemplateWriter()
+        self.reader = reader
 
     # Starting a talk
 
@@ -133,6 +138,7 @@ class Engine:
             "SELECT unlocked FROM person WHERE id = %s", (person["id"],)
         ).fetchone()
         result.unlocked = unlocked["unlocked"]
+        self.spent_notice(result, person["language"])
         self.conn.commit()
         return result
 
@@ -407,7 +413,23 @@ class Engine:
         result.turn_id = self._save_turn(talk["id"], "world", " ".join(lines), pack.move, evidence)
 
     def _supported(self):
-        return self.reader.supported if self.reader else None
+        if not self.reader:
+            return None
+
+        def supported(sentence, evidence):
+            # A check that can't run counts as a failed check, so the template is used instead.
+            try:
+                return self.reader.supported(sentence, evidence)
+            except Exception as e:
+                log.warning("support check failed: %s", type(e).__name__)
+                return False
+
+        return supported
+
+    def spent_notice(self, result: Result, lang: str) -> Result:
+        if self.budget and self.budget.spent:
+            result.notice = say(lang, "ai_resting")
+        return result
 
     def _build_listen(self, pack, result, person, st, *_):
         key = "listen_more" if st["person_turns"] <= 1 else "listen_why"

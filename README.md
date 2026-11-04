@@ -19,7 +19,7 @@ Early, and there's no hosted version to try. The backend and the phone app work 
 - The talk engine, its honesty checks, the worker and the API, with tests against a real Postgres
 - An Expo app for iPhone and Android: the full talk, the Map, You, Agreement cards, settings, error screens, the safety card and local notifications
 
-What's still stand-in: the World uses fixed templates unless you give it a model key, sign-in is a labelled dev stub, every number is sample data, and facts about Milan are placeholders. Voice hasn't been tested on a real phone yet. The [roadmap](docs/ROADMAP.md) has the full list.
+What's still stand-in: the World uses fixed templates unless you give it Azure OpenAI or Claude settings, sign-in is a labelled dev stub, every number is sample data, and facts about Milan are placeholders. Voice hasn't been tested on a real phone yet. The [roadmap](docs/ROADMAP.md) has the full list.
 
 ## Quick start
 
@@ -46,6 +46,8 @@ uv run uvicorn demos.api:app --port 8000
 ```
 
 The worker is optional for a local try: `uv run python -m demos.worker`.
+
+No phone handy? Open http://127.0.0.1:8000/ for a small test page. It signs in with the dev stub and runs a whole talk in the browser.
 
 Then the app:
 
@@ -75,6 +77,16 @@ Tests use their own databases, so they never touch your dev data. For the app, `
 ## Running it on a server
 
 `setup_service.sh` sets up a fresh Linux machine on first run, and updates and restarts everything when you run it again. It installs Docker and uv, creates `.env` with random secrets, and runs three systemd services: `demos-api`, `demos-identity` and `demos-worker`. Logs go to journald and to size-limited files in `logs/`.
+
+On a VM that already runs other things behind nginx, give it a service name, a port, a path and an nginx snippet file:
+
+```bash
+sudo SERVICE_NAME=demos PORT=8608 BASE_PATH=/demos/ NGINX_SNIPPET=/etc/nginx/snippets/demos.conf ./setup_service.sh
+```
+
+That mode installs nothing and stops if Docker, nginx, curl or Python 3.12 is missing. Postgres runs in Docker on 127.0.0.1 with names that start with the service name, and nothing else in Docker is touched. One unit, `<service>.service`, runs the API on 127.0.0.1, identity on a unix socket and the worker. It writes only the snippet and `/etc/nginx/conf.d/<service>-limits.conf`, and takes both away again if `nginx -t` fails. Your server block has to include the snippet. Logs: `journalctl -u <service> -f`.
+
+For real replies, fill in the `AZURE_OPENAI_` values in `.env` (a main deployment and an optional fallback) and restart the service. Every model call counts against `DAILY_REQUEST_CAP` and `DAILY_TOKEN_BUDGET`. Once the day's budget is spent the World says so and keeps talking with its templates, and each address gets a polite "slow down" past `RATE_TALK_PER_IP_PER_HOUR`.
 
 It's meant for a test box. Don't run it with real people's data until the dev sign-in stub is replaced and sample mode is off.
 
