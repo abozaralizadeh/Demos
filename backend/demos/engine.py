@@ -145,8 +145,16 @@ class Engine:
     # Hearing
 
     def _handle_reply(self, person, st, text) -> bool:
-        """Deal with a yes or no to a pending Mirror or Bridge. True if that was all it was."""
+        """Deal with a yes or no to an offer, a pending Mirror or a Bridge. True if that was all it was."""
         short = len(text.split()) <= 6
+        # An answer to "Want to hear why?" is decided here, in code, before any model reads it,
+        # so a plain yes can never be read as a new view and send the talk back to a Mirror.
+        if st.pop("offered", None) == "challenge":
+            if heard.accepts_offer(text):
+                return True
+            if heard.says_no(text) and short:
+                st["challenged"] = True
+                return True
         if st.get("awaiting_bridge"):
             if heard.says_yes(text) or heard.says_no(text):
                 value = "agree" if heard.says_yes(text) else "disagree"
@@ -363,6 +371,9 @@ class Engine:
         build = getattr(self, f"_build_{move.value}")
         build(pack, result, person, st, topic_id, focus, argument, fact, bridge, place)
         self._deliver(pack, result, talk, lang)
+        if result.data is None and move == Move.WHERE_YOU_STAND:
+            # The reply fell back to "We don't know yet", so no offer was made after all.
+            st.pop("offered", None)
         if move == Move.CLOSE:
             result.ended = True
         return result
@@ -488,6 +499,7 @@ class Engine:
             pack.template.append(
                 Sentence("claim", say(lang, "stand_other", summary=argument[f"summary_{lang}"]), [evidence_id])
             )
+            st["offered"] = "challenge"
         result.source = say(lang, "stand_source", place=place)
         result.data = result.data or {"base": counts.base}
 

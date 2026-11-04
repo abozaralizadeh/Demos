@@ -23,6 +23,12 @@ YES = re.compile(
     r"|sì|si|esatto|giusto|certo|proprio così|va bene|ok|okay)\b",
     re.IGNORECASE,
 )
+# Taking up an offer like "Want to hear why?". Short answers only, checked together with YES.
+ACCEPT = re.compile(
+    r"^\W*(tell me|why|go on|go ahead|let's hear|let me hear|please|i'd like that"
+    r"|perché|dimmi|sentiamo|fammi sentire|vai|volentieri)\b",
+    re.IGNORECASE,
+)
 NO = re.compile(r"^\W*(no|nope|not really|wrong|that's wrong|non proprio|sbagliato|per niente)\b", re.IGNORECASE)
 WANT_FACTS = re.compile(
     r"\b(is that true|is that even true|source|prove it|numbers|data"
@@ -78,6 +84,10 @@ def wants_to_stop(text: str) -> bool:
 
 def says_yes(text: str) -> bool:
     return bool(YES.search(text))
+
+
+def accepts_offer(text: str) -> bool:
+    return len(text.split()) <= 8 and (says_yes(text) or bool(ACCEPT.search(text)))
 
 
 def says_no(text: str) -> bool:

@@ -1,3 +1,5 @@
+import pytest
+
 from demos import openings
 from demos.checks import Sentence
 from demos.config import settings
@@ -246,3 +248,39 @@ def test_italian_talk(conn, person):
     assert mirror.lines == ["Ecco cosa abbiamo sentito. Giusto?"]
     stand = e.say(person, talk.conversation_id, "Sì")
     assert "di noi a Milano" in stand.lines[0]
+
+
+class EagerReader:
+    """Acts like a real model that reads a view into anything, even a plain yes."""
+
+    def views(self, text, statements):
+        from demos.understand import HeardView
+
+        # Like the real run: the rent lines read as agree, and a plain "yes, tell me why" as unsure.
+        value = "agree" if "rent" in text.lower() else "unsure"
+        return [HeardView(s["id"], s["topic_id"], value, text) for s in statements if s["id"] == "rent_main"]
+
+    def supported(self, sentence, evidence):
+        return True
+
+
+def offered_the_other_side(conn, person):
+    e = Engine(conn, reader=EagerReader())
+    cid, mirror = to_mirror(e, person)
+    assert mirror.move == "mirror"
+    stand = e.say(person, cid, "Yes, that's it.")
+    assert stand.move == "where_you_stand" and "Want to hear why?" in stand.lines[-1]
+    return e, cid
+
+
+@pytest.mark.parametrize("answer", ["Yes, tell me why", "Tell me why", "Sure", "Why?", "Sì, dimmi perché", "Perché?", "ok"])
+def test_saying_yes_to_the_other_side_always_hears_it(conn, person, answer):
+    e, cid = offered_the_other_side(conn, person)
+    challenge = e.say(person, cid, answer)
+    assert challenge.move == "challenge" and challenge.theme == "white"
+
+
+def test_a_no_thanks_to_the_other_side_is_respected(conn, person):
+    e, cid = offered_the_other_side(conn, person)
+    after = e.say(person, cid, "No thanks")
+    assert after.move not in ("challenge", "mirror")
