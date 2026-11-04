@@ -1,181 +1,335 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Demos</title>
-<meta name="description" content="A voice app where you talk to everyone at once. The World answers as &quot;we&quot;, built only from what real people said.">
-<link rel="icon" type="image/png" href="img/favicon.png">
+<title>Demos: talk to everyone at once</title>
+<meta name="description" content="A voice app where you talk to everyone in your city at once. The World answers as &quot;we&quot;, built only from what real people said. Source available.">
+<link rel="canonical" href="https://abozaralizadeh.github.io/Demos/">
+<meta name="theme-color" content="#000000">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Demos">
+<meta property="og:url" content="https://abozaralizadeh.github.io/Demos/">
+<meta property="og:title" content="Demos: talk to everyone at once">
+<meta property="og:description" content="Say what's on your mind. The World answers as &quot;we&quot;, built only from what real people said, and shows you the strongest case from the other side.">
+<meta property="og:image" content="https://abozaralizadeh.github.io/Demos/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Demos. Talk to everyone at once. Two phone screens from the app, one black and one white.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Demos: talk to everyone at once">
+<meta name="twitter:description" content="A voice app where the World answers as &quot;we&quot;, built only from what real people said.">
+<meta name="twitter:image" content="https://abozaralizadeh.github.io/Demos/img/og.png">
+
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="img/favicon.png" type="image/png" sizes="48x48">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --ground: #000000;
-    --text: #F5F5F3;
-    --second: #A3A3A0;
-    --line: #2E2E2C;
-    --field: #141414;
-    --voice: "Bricolage Grotesque", system-ui, sans-serif;
-    --data: "DM Mono", ui-monospace, monospace;
-  }
-  * { box-sizing: border-box; }
-  html { background: var(--ground); }
-  body {
-    margin: 0;
-    background: var(--ground);
-    color: var(--text);
-    font-family: var(--voice);
-    font-size: 18px;
-    line-height: 1.5;
-  }
-  main { max-width: 1040px; margin: 0 auto; padding: 0 16px 96px; }
-  header { padding: 32px 0 0; display: flex; align-items: center; gap: 10px; }
-  .mark { width: 30px; height: 18px; position: relative; }
-  .mark span { position: absolute; top: 0; width: 18px; height: 18px; border-radius: 50%; background: var(--text); opacity: .55; }
-  .mark span + span { left: 12px; }
-  .name { font-weight: 600; font-size: 20px; }
-  .tag { margin-left: auto; font-family: var(--data); font-size: 12px; color: var(--second); border: 1px solid var(--line); padding: 3px 8px; }
-  .repo { font-family: var(--data); font-size: 12px; text-decoration: none; border: 1px solid var(--text); padding: 3px 8px; }
-  .repo:hover { background: var(--text); color: var(--ground); }
-  .demo { display: grid; grid-template-columns: minmax(0, 360px) minmax(0, 1fr); gap: 48px; align-items: end; }
-  .demo img { display: block; width: 100%; height: auto; }
-  .demo p { margin: 0 0 16px; color: var(--second); max-width: 34ch; }
-  .demo p b { color: var(--text); font-weight: 400; }
-  h1 { font-size: clamp(40px, 8vw, 76px); line-height: 1.02; font-weight: 400; letter-spacing: -0.02em; margin: 96px 0 24px; max-width: 13ch; }
-  .lede { font-size: clamp(20px, 2.6vw, 26px); line-height: 1.35; color: var(--second); max-width: 34ch; margin: 0; }
-  .lede b { color: var(--text); font-weight: 400; }
-  h2 { font-size: 15px; font-weight: 400; color: var(--second); margin: 112px 0 24px; padding-top: 20px; border-top: 1px solid var(--line); }
-  .shots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-  figure { margin: 0; }
-  figure img { display: block; width: 100%; height: auto; border-radius: 22px; border: 1px solid var(--line); }
-  figcaption { margin-top: 12px; font-size: 16px; line-height: 1.35; color: var(--second); }
-  figcaption b { display: block; color: var(--text); font-weight: 400; }
-  .rules { display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px 48px; }
-  .rules p { margin: 0; color: var(--second); }
-  .rules p b { display: block; color: var(--text); font-weight: 400; font-size: 22px; line-height: 1.25; margin-bottom: 6px; }
-  .steps { counter-reset: step; display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px; max-width: 720px; }
-  .step p { margin: 0 0 10px; }
-  .step p::before { counter-increment: step; content: counter(step) "  "; font-family: var(--data); color: var(--second); font-size: 14px; }
-  pre {
-    margin: 0;
-    background: var(--field);
-    border: 1px solid var(--line);
-    padding: 14px 16px;
-    overflow-x: auto;
-    font-family: var(--data);
-    font-size: 14px;
-    line-height: 1.6;
-  }
-  code { font-family: var(--data); font-size: .85em; }
-  .note { color: var(--second); max-width: 720px; margin: 28px 0 0; }
-  a { color: var(--text); text-underline-offset: 3px; }
-  footer { margin-top: 112px; padding-top: 20px; border-top: 1px solid var(--line); color: var(--second); font-size: 15px; display: flex; flex-wrap: wrap; gap: 8px 24px; }
-  @media (max-width: 760px) {
-    h1 { margin-top: 64px; }
-    .demo { grid-template-columns: minmax(0, 1fr); gap: 24px; }
-    .demo img { max-width: 360px; }
-    h2 { margin-top: 80px; }
-    .shots { grid-template-columns: repeat(2, 1fr); gap: 16px; }
-    .rules { grid-template-columns: 1fr; gap: 24px; }
-  }
-  @media (max-width: 420px) {
-    .shots { grid-template-columns: 1fr 1fr; gap: 12px; }
-    figcaption { font-size: 14px; }
-  }
-</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..600&family=DM+Mono:wght@400&family=DM+Sans:opsz,wght@9..40,400..600&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..600&family=DM+Mono:wght@400&family=DM+Sans:opsz,wght@9..40,400..600&display=swap"></noscript>
+<link rel="preload" as="image" href="img/demo-poster.webp" fetchpriority="high">
+<link rel="stylesheet" href="styles.css?v=9">
+<script>
+  // Set the theme before paint, so there's no flash.
+  (function () {
+    var t = null;
+    try { t = localStorage.getItem("demos-theme"); } catch (e) {}
+    if (!t) t = matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+    document.documentElement.dataset.theme = t;
+    document.documentElement.classList.add("js");
+  })();
+</script>
 </head>
 <body>
-<main>
-  <header>
-    <div class="mark" aria-hidden="true"><span></span><span></span></div>
-    <div class="name">Demos</div>
-    <div class="tag">Early, sample data</div>
-    <a class="repo" href="https://github.com/abozaralizadeh/Demos">GitHub</a>
-  </header>
+<a class="skip" href="#main">Skip to content</a>
 
-  <h1>Talk to everyone at once.</h1>
-  <p class="lede">You say what's on your mind. <b>The World</b> answers as "we", built only from what real people said. It has no opinions of its own, and when it doesn't know, it says so.</p>
-
-  <h2>One talk, start to finish</h2>
-  <div class="demo">
-    <img src="img/demo.gif" alt="A walkthrough of one talk: the World asks what's on your mind, says where you stand, speaks for the other side on a white screen, shows data, offers an idea both sides might take, then the Map and an Agreement card" width="400" height="915">
-    <div>
-      <p><b>Real screens from the app,</b> running in the iPhone simulator against the real backend.</p>
-      <p>The numbers are sample data. The World uses fixed templates here instead of a language model, and facts about Milan are placeholders until real sources are checked.</p>
+<header class="nav">
+  <div class="wrap nav-in">
+    <a class="brand" href="#top" aria-label="Demos, back to top">
+      <span class="mark" aria-hidden="true"><i></i><i></i></span>
+      <span>Demos</span>
+    </a>
+    <nav class="links" aria-label="Sections">
+      <a href="#how">How it works</a>
+      <a href="#features">Features</a>
+      <a href="#install">Install</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="theme" type="button" aria-pressed="false" title="Flip the page, like the app does for the other side">
+        <span class="theme-icon" aria-hidden="true"></span>
+        <span class="theme-label">Other side</span>
+      </button>
+      <a class="btn btn-small" href="https://github.com/abozaralizadeh/Demos" aria-label="Demos on GitHub">
+        <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        <span>GitHub</span>
+      </a>
     </div>
   </div>
+</header>
 
-  <h2>The app</h2>
-  <div class="shots">
-    <figure>
-      <img src="img/first-open.png" alt="A black screen with one question from the World and a mic button" width="414" height="900">
-      <figcaption><b>No forms</b>You just talk.</figcaption>
-    </figure>
-    <figure>
-      <img src="img/where-you-stand.png" alt="The World saying what share of people in Milan agree, and offering the other view" width="414" height="900" loading="lazy">
-      <figcaption><b>Where you stand</b>The World speaks as "we", with real counts, and offers the other view.</figcaption>
-    </figure>
-    <figure>
-      <img src="img/challenge.png" alt="A white screen where the World speaks as the people who disagree" width="414" height="900" loading="lazy">
-      <figcaption><b>The other side</b>The screen turns white when the World speaks as the people who disagree with you.</figcaption>
-    </figure>
-    <figure>
-      <img src="img/not-enough.png" alt="The World saying few people have talked about schools, with a data block below" width="414" height="900" loading="lazy">
-      <figcaption><b>Honest when it's thin</b>Too few people? It says so, and shows data instead.</figcaption>
-    </figure>
-    <figure>
-      <img src="img/map.png" alt="A map of topics drawn as pairs of circles" width="414" height="900" loading="lazy">
-      <figcaption><b>The Map</b>Each topic is two circles. The distance between them is the gap.</figcaption>
-    </figure>
-    <figure>
-      <img src="img/agreement.png" alt="An Agreement card with support bars for each group" width="414" height="900" loading="lazy">
-      <figcaption><b>Agreements</b>When an idea wins across groups, it becomes a live card.</figcaption>
-    </figure>
-  </div>
-  <p class="note">Real screens from the iPhone simulator. The numbers are sample data, and facts are placeholders until real sources are reviewed.</p>
+<main id="main">
 
-  <h2>How the World stays honest</h2>
-  <div class="rules">
-    <p><b>Code writes every number.</b>The model never types a figure. Every reply is checked against its evidence before it's said.</p>
-    <p><b>No voting.</b>Your position comes from how you talk, and only counts after you confirm it.</p>
-    <p><b>Every side at its strongest.</b>Arguments come from real people, never from the AI itself.</p>
-    <p><b>Black and white.</b>The World has no side, so the interface has no colour. Colour only ever measures something.</p>
-  </div>
+  <!-- Hero -->
+  <section class="hero" id="top">
+    <div class="rings" aria-hidden="true"><span></span><span></span></div>
+    <div class="wrap hero-in">
+      <div class="hero-copy">
+        <p class="eyebrow">A voice app for your city</p>
+        <h1>Talk to everyone at&nbsp;once.</h1>
+        <p class="lede">Tap the mic and say what’s on your mind. The World answers as &ldquo;we&rdquo;, built only from what real people said, then shows you the strongest case from the other side.</p>
+        <div class="cta">
+          <a class="btn btn-primary" href="https://github.com/abozaralizadeh/Demos">
+            <svg viewBox="0 0 16 16" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+            View on GitHub
+          </a>
+          <a class="btn btn-ghost" href="#install">Install</a>
+        </div>
+        <p class="fine">Source available &nbsp;·&nbsp; iPhone and Android &nbsp;·&nbsp; Early, on sample data</p>
+      </div>
 
-  <h2>Try it on your laptop</h2>
-  <div class="steps">
-    <div class="step">
-      <p>Get the database up. You need Docker, <a href="https://docs.astral.sh/uv/">uv</a> and Python 3.12 or 3.13.</p>
-<pre>cp .env.example .env
-docker compose up -d</pre>
+      <figure class="hero-demo">
+        <div class="phone phone-lg">
+          <video class="demo-video" muted loop playsinline preload="none" width="414" height="900"
+                 poster="img/demo-poster.webp" data-src="img/demo.mp4"
+                 aria-label="A walkthrough of one talk in the app, made of real screens"></video>
+          <span class="island" aria-hidden="true"></span>
+        </div>
+        <figcaption class="demo-cap" aria-live="off">
+          <span class="data"><b class="demo-n">01</b>/09</span>
+          <span class="demo-t">Open it, and the World asks what’s on your mind.</span>
+        </figcaption>
+      </figure>
     </div>
-    <div class="step">
-      <p>Start the backend from <code>backend/</code>. The two servers each need their own terminal.</p>
-<pre>uv sync
+  </section>
+
+  <!-- Signature: the crowd -->
+  <section class="crowd-sec" aria-labelledby="crowd-h">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <p class="eyebrow">Each dot is a person</p>
+        <h2 id="crowd-h">Two sides. One overlap.</h2>
+        <p class="sec-lede">On the Map, every topic is two circles. The distance between them is the gap. The overlap is the common ground, and growing it is the whole point.</p>
+      </div>
+    </div>
+    <div class="crowd">
+      <canvas class="crowd-canvas" role="img" aria-label="An illustration: two crowds of dots, one per person, moving together. The dots where they overlap turn green."></canvas>
+      <div class="wrap crowd-ui">
+        <dl class="readout">
+          <div><dt>People</dt><dd class="r-people">0</dd></div>
+          <div><dt>Common ground</dt><dd class="r-common agree">0%</dd></div>
+          <div><dt>Heard you</dt><dd class="r-heard">Tap to speak</dd></div>
+        </dl>
+        <button class="speak" type="button">
+          <span class="speak-dot" aria-hidden="true"></span>
+          Say something to the crowd
+        </button>
+      </div>
+    </div>
+    <p class="wrap fine crowd-note">An illustration, not real data. Scroll to close the gap.</p>
+  </section>
+
+  <!-- How it works -->
+  <section class="how" id="how" aria-labelledby="how-h">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <p class="eyebrow">How it works</p>
+        <h2 id="how-h">One talk, three moves.</h2>
+      </div>
+      <ol class="steps">
+        <li class="step reveal">
+          <div class="phone phone-sm"><img src="img/say.webp" alt="The app asking, Tell us more. What makes you say that?, after someone says rent in Milan is out of control" width="414" height="900" loading="lazy" decoding="async"><span class="island" aria-hidden="true"></span></div>
+          <div class="step-copy">
+            <span class="data step-n">01</span>
+            <h3>Say it.</h3>
+            <p>Talk the way you’d talk to a friend. No forms, no polls, nothing to vote on. If you can’t talk out loud, type.</p>
+          </div>
+        </li>
+        <li class="step reveal">
+          <div class="phone phone-sm"><img src="img/stand.webp" alt="The World saying 55% of us in Milan agree that rent is the main problem, and asking if you want to hear why others disagree" width="414" height="900" loading="lazy" decoding="async"><span class="island" aria-hidden="true"></span></div>
+          <div class="step-copy">
+            <span class="data step-n">02</span>
+            <h3>Hear where you stand.</h3>
+            <p>The World says your view back to you and only counts it after you say yes. Then it tells you how many of us agree, with real counts.</p>
+          </div>
+        </li>
+        <li class="step reveal">
+          <div class="phone phone-sm"><img src="img/bridge.webp" alt="Two overlapping green circles above an idea both groups might accept: limit short-term rentals in the center, with exceptions for residents" width="414" height="900" loading="lazy" decoding="async"><span class="island" aria-hidden="true"></span></div>
+          <div class="step-copy">
+            <span class="data step-n">03</span>
+            <h3>Find the common ground.</h3>
+            <p>After the other side has had its say, the World brings an idea both groups might accept, built from what people on each side said.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- The flip -->
+  <section class="flip" aria-labelledby="flip-h">
+    <div class="wrap flip-in">
+      <div class="flip-copy">
+        <p class="eyebrow">The other side</p>
+        <h2 id="flip-h" class="quote">&ldquo;We think rent is the symptom. Pay in Milan hasn&rsquo;t kept up, so every rent feels too high.&rdquo;</h2>
+        <p>When the World speaks for the people who disagree with you, the whole screen turns white. You feel it before you read it.</p>
+        <p>Every argument comes from real people, at its strongest. The AI never makes one up.</p>
+        <p class="fine">Sample data. In this example, 23% of Milan.</p>
+      </div>
+      <div class="phone phone-md reveal"><img src="img/other-side.webp" alt="The app on a white screen: Let me speak as the people who disagree with you, followed by their argument" width="414" height="900" loading="lazy" decoding="async"><span class="island" aria-hidden="true"></span></div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features" id="features" aria-labelledby="feat-h">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <p class="eyebrow">What’s in it</p>
+        <h2 id="feat-h">Built so you can trust the numbers.</h2>
+      </div>
+      <div class="cards">
+        <article class="card reveal">
+          <div class="shot"><img src="img/map.webp" alt="The Map of Milan: topics drawn as pairs of red and green circles" width="414" height="900" loading="lazy" decoding="async"></div>
+          <h3>The Map</h3>
+          <p>Every topic is two circles. Far apart means divided, merged means agreed. Colour only ever measures something.</p>
+        </article>
+        <article class="card reveal">
+          <div class="shot"><img src="img/agreement.webp" alt="An Agreement card with support bars for owners, renters and overall" width="414" height="900" loading="lazy" decoding="async"></div>
+          <h3>Agreements</h3>
+          <p>When an idea wins support across groups and keeps it, it becomes a live card you can share or ask to send to the city council.</p>
+        </article>
+        <article class="card reveal">
+          <div class="shot"><img src="img/thin.webp" alt="The World saying not many of us have talked about schools yet, and showing a data block instead" width="414" height="900" loading="lazy" decoding="async"></div>
+          <h3>Honest when it’s thin</h3>
+          <p>Too few people on a topic? The World says so and shows studies and polls instead of guessing.</p>
+        </article>
+        <article class="card reveal">
+          <div class="shot"><img src="img/source.webp" alt="A source panel listing the source name, year and whether it has been checked" width="414" height="900" loading="lazy" decoding="async"></div>
+          <h3>Every fact has a source</h3>
+          <p>Data sits in square blocks, set in mono. Tap one to see where it came from and whether anyone has checked it.</p>
+        </article>
+        <article class="card reveal">
+          <div class="shot"><img src="img/safety.webp" alt="A help card with the emergency number and a support line" width="414" height="900" loading="lazy" decoding="async"></div>
+          <h3>Help, not a debate</h3>
+          <p>If someone sounds like they’re in danger, the World stops arguing and shows who to call.</p>
+        </article>
+        <article class="card reveal">
+          <div class="shot"><img src="img/speaks-first.webp" alt="The World opening with: We are very close to an agreement on bike lanes in your area. What's missing for you?" width="414" height="900" loading="lazy" decoding="async"></div>
+          <h3>It speaks first</h3>
+          <p>Next time you open it, the World might tell you what changed, ask for your help, or say you’re close to an agreement.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Install -->
+  <section class="install" id="install" aria-labelledby="install-h">
+    <div class="wrap install-in">
+      <div class="sec-head reveal">
+        <p class="eyebrow">Install</p>
+        <h2 id="install-h">Run it on your laptop.</h2>
+        <p class="sec-lede">You need Docker, <a href="https://docs.astral.sh/uv/">uv</a>, Python 3.12 or 3.13, Node 20 or newer, and Xcode or Android Studio.</p>
+      </div>
+      <ol class="code-steps">
+        <li class="reveal">
+          <p><span class="data">01</span> Get the code and start the database.</p>
+          <div class="code"><pre><code>git clone https://github.com/abozaralizadeh/Demos.git
+cd Demos
+cp .env.example .env
+docker compose up -d</code></pre><button class="copy" type="button">Copy</button></div>
+        </li>
+        <li class="reveal">
+          <p><span class="data">02</span> Add sample data and start the identity service.</p>
+          <div class="code"><pre><code>cd backend
+uv sync
 uv run python -m demos.seed
-uv run uvicorn demos.identity_service:app --port 8001
-uv run uvicorn demos.api:app --port 8000</pre>
+uv run uvicorn demos.identity_service:app --port 8001</code></pre><button class="copy" type="button">Copy</button></div>
+        </li>
+        <li class="reveal">
+          <p><span class="data">03</span> In a second terminal, start the API.</p>
+          <div class="code"><pre><code>cd backend
+uv run uvicorn demos.api:app --port 8000</code></pre><button class="copy" type="button">Copy</button></div>
+        </li>
+        <li class="reveal">
+          <p><span class="data">04</span> Build and run the app. The first build takes a while.</p>
+          <div class="code"><pre><code>cd app
+npm install
+npx expo run:ios</code></pre><button class="copy" type="button">Copy</button></div>
+        </li>
+      </ol>
+      <p class="fine install-note">Use <code>npx expo run:android</code> for Android. It’s a native dev build, not Expo Go, because speech recognition runs on the phone. The <a href="https://github.com/abozaralizadeh/Demos#readme">README</a> has the rest, tests included.</p>
     </div>
-    <div class="step">
-      <p>Build and run the app from <code>app/</code>. You need Node 20 or newer and Xcode or Android Studio.</p>
-<pre>npm install
-npx expo run:ios</pre>
-    </div>
-    <div class="step">
-      <p>Run the tests from <code>backend/</code>.</p>
-<pre>uv run --group dev pytest</pre>
-    </div>
-  </div>
-  <p class="note">It's a native dev build, because speech recognition runs on the phone. Sign-in is a dev stub, and the World uses fixed templates unless you give it a model key. The <a href="https://github.com/abozaralizadeh/Demos#readme">README</a> has the details.</p>
+  </section>
 
-  <h2>License</h2>
-  <p class="note" style="margin-top:0">Source available, free for non-commercial use (<a href="https://github.com/abozaralizadeh/Demos/blob/main/LICENSE">PolyForm Noncommercial 1.0.0</a>). Commercial use needs written permission: <a href="https://github.com/abozaralizadeh/Demos/issues">open an issue</a> to ask.</p>
+  <!-- FAQ -->
+  <section class="faq" id="faq" aria-labelledby="faq-h">
+    <div class="wrap faq-in">
+      <div class="sec-head reveal">
+        <p class="eyebrow">FAQ</p>
+        <h2 id="faq-h">The honest bits.</h2>
+      </div>
+      <div class="qs">
+        <details class="reveal">
+          <summary>Can I use it today?</summary>
+          <p>Only on your own laptop. There’s no hosted version yet, and nothing in it comes from real people. Every number is sample data, and facts about Milan are placeholders until real sources are checked.</p>
+        </details>
+        <details class="reveal">
+          <summary>Is the World a chatbot?</summary>
+          <p>Not really. It has no name and no opinions. It speaks as &ldquo;we&rdquo; and can only say what people said or what labelled data shows. Code writes every number, and every reply is checked before it’s said.</p>
+        </details>
+        <details class="reveal">
+          <summary>Does it need an AI model?</summary>
+          <p>No. Without a model key the World uses fixed templates, and that’s what the demo shows. With one, a model writes the words, and code still writes the numbers.</p>
+        </details>
+        <details class="reveal">
+          <summary>What happens to what I say?</summary>
+          <p>A view only counts after the World says it back and you agree. You can see, change or delete it any time. Logs hold IDs and timings, never what anyone said.</p>
+        </details>
+        <details class="reveal">
+          <summary>What doesn’t work yet?</summary>
+          <p>Sign-in is a labelled dev stub, not a real ID check. Voice hasn’t been tested on a real phone yet. Italy, World and petitions are built but switched off.</p>
+        </details>
+        <details class="reveal">
+          <summary>Can I use the code?</summary>
+          <p>Yes, for anything non-commercial. It’s source available under the PolyForm Noncommercial License 1.0.0. For commercial use, <a href="https://github.com/abozaralizadeh/Demos/issues">open an issue</a> to ask.</p>
+        </details>
+      </div>
+    </div>
+  </section>
 
-  <footer>
-    <span>Demos, from the Greek for "the people".</span>
-    <a href="https://github.com/abozaralizadeh/Demos">github.com/abozaralizadeh/Demos</a>
-  </footer>
+  <section class="end" aria-labelledby="end-h">
+    <div class="end-rings" aria-hidden="true"><span></span><span></span></div>
+    <div class="wrap end-in reveal">
+      <h2 id="end-h">Hear the other side.</h2>
+      <p class="sec-lede">Demos is early and runs on sample data. Read the code, run it on your laptop, and tell us what&rsquo;s missing.</p>
+      <div class="cta">
+        <a class="btn btn-primary" href="https://github.com/abozaralizadeh/Demos">
+          <svg viewBox="0 0 16 16" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          View on GitHub
+        </a>
+        <a class="btn btn-ghost" href="https://github.com/abozaralizadeh/Demos/blob/main/docs/CONCEPT.md">Read the concept</a>
+      </div>
+    </div>
+  </section>
+
 </main>
+
+<footer class="foot">
+  <div class="wrap foot-in">
+    <div class="foot-brand">
+      <span class="mark" aria-hidden="true"><i></i><i></i></span>
+      <span>Demos, from the Greek for &ldquo;the people&rdquo;.</span>
+    </div>
+    <p>Source available, free for non-commercial use (<a href="https://github.com/abozaralizadeh/Demos/blob/main/LICENSE">PolyForm Noncommercial 1.0.0</a>).</p>
+    <p class="foot-links">
+      <a href="https://github.com/abozaralizadeh/Demos">github.com/abozaralizadeh/Demos</a>
+      <span>Made by <a href="https://abozaralizadeh.github.io/">Abozar Alizadeh</a></span>
+    </p>
+  </div>
+</footer>
+
+<script src="app.js?v=9" defer></script>
 </body>
 </html>
